@@ -3,15 +3,17 @@ version: '3.8'
 services:
   core-db:
     image: postgres:15-alpine
-    ports:
-      - "5432:5432"
     environment:
       - POSTGRES_DB=banking_db
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=secretpassword
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+    networks:
+      - banking-network
 
   account-service:
-    build: /banking-service
+    build: ./banking-service
     ports:
       - "8080:8080"
     environment:
@@ -20,3 +22,12 @@ services:
       - SPRING_DATASOURCE_PASSWORD=secretpassword
     depends_on:
       - core-db
+    networks:
+      - banking-network
+
+networks:
+  banking-network:
+    driver: bridge
+
+volumes:
+  pg-data:
