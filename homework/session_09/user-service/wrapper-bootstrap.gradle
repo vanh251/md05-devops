@@ -1,0 +1,5 @@
+// Chạy độc lập, không cần tải plugin Spring Boot để tạo Wrapper.
+tasks.named('wrapper') {
+    gradleVersion = '7.6.4'
+    distributionType = Wrapper.DistributionType.BIN
+}

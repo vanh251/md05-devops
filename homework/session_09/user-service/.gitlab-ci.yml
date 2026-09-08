@@ -1,0 +1,14 @@
+default:
+  image: gradle:7.6.4-jdk17
+  before_script:
+    # Bỏ dòng tạo Wrapper này nếu đã chạy setup-gradle.sh và commit Wrapper.
+    - gradle -b wrapper-bootstrap.gradle wrapper --gradle-version 7.6.4
+    - chmod +x gradlew
+
+stages:
+  - build_app
+
+build_job:
+  stage: build_app
+  script:
+    - ./gradlew clean build -x test

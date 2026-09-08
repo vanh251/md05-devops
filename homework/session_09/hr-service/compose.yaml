@@ -1,0 +1,14 @@
+services:
+  postgres:
+    image: postgres:14-alpine
+    environment:
+      POSTGRES_DB: hr_test_db
+      POSTGRES_USER: hr_test_user
+      POSTGRES_PASSWORD: ci_test_password
+    ports:
+      - "127.0.0.1:5433:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U hr_test_user -d hr_test_db"]
+      interval: 2s
+      timeout: 3s
+      retries: 30

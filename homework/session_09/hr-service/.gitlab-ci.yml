@@ -1,0 +1,41 @@
+default:
+  image: gradle:7.6.4-jdk17
+  before_script:
+    # Bỏ dòng tạo Wrapper này nếu đã chạy setup-gradle.sh và commit Wrapper.
+    - gradle -b wrapper-bootstrap.gradle wrapper --gradle-version 7.6.4
+    - chmod +x gradlew
+
+stages:
+  - test
+  - build
+
+test_job:
+  stage: test
+  services:
+    - name: postgres:14-alpine
+      alias: postgres
+  variables:
+    POSTGRES_DB: hr_test_db
+    POSTGRES_USER: hr_test_user
+    POSTGRES_PASSWORD: "ci_test_password"
+    SPRING_DATASOURCE_URL: "jdbc:postgresql://postgres:5432/hr_test_db"
+    SPRING_DATASOURCE_USERNAME: "hr_test_user"
+    SPRING_DATASOURCE_PASSWORD: "ci_test_password"
+  script:
+    - ./gradlew test
+  artifacts:
+    when: always
+    reports:
+      junit: build/test-results/test/TEST-*.xml
+    paths:
+      - build/reports/tests/test/
+    expire_in: 1 day
+
+build_job:
+  stage: build
+  script:
+    - ./gradlew build -x test
+  artifacts:
+    paths:
+      - build/libs/*.jar
+    expire_in: 1 day
