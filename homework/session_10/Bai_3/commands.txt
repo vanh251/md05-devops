@@ -1,0 +1,8 @@
+ssh-keygen -t ed25519 -C "devops-key"
+ls ~/.ssh/
+ssh-copy-id devops@203.145.47.206
+ssh devops@203.145.47.206
+sudo nano /etc/ssh/sshd_config
+PermitRootLogin no
+PasswordAuthentication no
+sudo systemctl restart ssh
